@@ -16,8 +16,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     return 'light';
   });
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const toggleTheme = () => {
+    setIsTransitioning(true);
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
@@ -33,11 +35,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Save to localStorage
     localStorage.setItem('theme', theme);
+
+    // Reset transition state after animation completes
+    const timer = setTimeout(() => {
+      setIsTransitioning(false);
+    }, 400); // Match with the CSS transition duration
+
+    return () => clearTimeout(timer);
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
-      {children}
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme, isTransitioning }}>
+      <div className={`transition-colors duration-400 ${isTransitioning ? 'theme-transitioning' : ''}`}>
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 };

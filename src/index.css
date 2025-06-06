@@ -3,10 +3,28 @@
 
 @custom-variant dark (&:is(.dark *));
 
+:root {
+  --theme-transition-duration: 400ms;
+  --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 * {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: var(--theme-transition-timing);
+  transition-duration: var(--theme-transition-duration);
+}
+
+html {
+  transition: background-color var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+body {
+  transition: background-color var(--theme-transition-duration) var(--theme-transition-timing),
+              color var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+.card, .bg-card, .bg-background, header, footer, section, nav, button, input {
+  transition: all var(--theme-transition-duration) var(--theme-transition-timing);
 }
 
 :root {

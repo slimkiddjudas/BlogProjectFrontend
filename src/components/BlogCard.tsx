@@ -17,7 +17,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, variant = 'default' }) => {
 
   if (isFeature) {
     return (
-      <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 card-hover">
+      <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 card-hover content-transition">
         <div className="relative">
           {post.imageUrl && (
             <div className="aspect-video overflow-hidden">
@@ -111,7 +111,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, variant = 'default' }) => {
   }
 
   return (
-    <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 card-hover">
+    <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 card-hover content-transition">
       {post.imageUrl && (
         <div className="aspect-video overflow-hidden">
           <img

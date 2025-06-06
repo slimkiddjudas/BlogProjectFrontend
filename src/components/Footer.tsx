@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Heart } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const Footer: React.FC = () => {
@@ -27,10 +27,8 @@ const Footer: React.FC = () => {
   };
 
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Mail, href: '#', label: 'E-posta' }
+    { icon: Github, href: 'https://github.com/slimkiddjudas', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://linkedin.com/in/umutcerk', label: 'LinkedIn' }
   ];
 
   return (
