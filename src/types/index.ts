@@ -87,3 +87,29 @@ export interface RegisterCredentials {
   email: string;
   password: string;
 }
+
+// Comment types
+export interface CommentWriter {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  userId: number;
+  postId: number;
+  createdAt: string;
+  updatedAt: string;
+  writer: CommentWriter;
+}
+
+export interface CreateCommentRequest {
+  content: string;
+  postId: number;
+}
+
+export interface CsrfTokenResponse {
+  csrfToken: string;
+}

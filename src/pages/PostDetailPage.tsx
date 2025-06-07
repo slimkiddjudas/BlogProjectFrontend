@@ -5,6 +5,8 @@ import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import CommentsList from '@/components/CommentsList';
 import { postService } from '@/services/postService';
 import type { Post } from '@/types';
 
@@ -150,10 +152,8 @@ const PostDetailPage: React.FC = () => {
               dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }}
             />
           </CardContent>
-        </Card>
-
-        {/* Article Footer */}
-        <Card>
+        </Card>        {/* Article Footer */}
+        <Card className="mb-8">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -177,6 +177,12 @@ const PostDetailPage: React.FC = () => {
             </div>
           </CardHeader>
         </Card>
+
+        {/* Comments Section */}
+        <div className="mt-12">
+          <Separator className="mb-8" />
+          <CommentsList postId={post.id} />
+        </div>
       </div>
     </div>
   );
