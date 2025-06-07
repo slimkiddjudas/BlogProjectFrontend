@@ -1,32 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, Users, BookOpen } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import BlogCard from './BlogCard';
-import { featuredPosts, recentPosts } from '../data/mockData';
+import { postService } from '@/services/postService';
+import type { Post } from '@/types';
 import { useTheme } from '../hooks/useTheme';
 
 const HomePage: React.FC = () => {
   const { theme } = useTheme();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await postService.getAllPosts();
+        setPosts(response.posts);
+      } catch (err) {
+        console.error('Error fetching posts:', err);
+        setError('Makaleler yüklenirken bir hata oluştu');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  // Get featured posts (first 2 posts with highest view count)
+  const featuredPosts = posts
+    .sort((a, b) => b.viewCount - a.viewCount)
+    .slice(0, 2);
+
+  // Get recent posts (sorted by creation date, excluding featured)
+  const recentPosts = posts
+    .filter(post => !featuredPosts.includes(post))
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 8);
   
   const stats = [
     {
       title: 'Toplam Makale',
-      value: '150+',
+      value: `${posts.length}+`,
       icon: BookOpen,
       description: 'Teknoloji ve geliştirme konularında'
     },
     {
-      title: 'Aktif Okuyucu',
-      value: '25K+',
-      icon: Users,
-      description: 'Aylık benzersiz ziyaretçi'
+      title: 'Toplam Görüntülenme',
+      value: `${posts.reduce((sum, post) => sum + post.viewCount, 0)}+`,
+      icon: TrendingUp,
+      description: 'Toplam makale görüntülenme sayısı'
     },
     {
-      title: 'Popülerlik',
-      value: '95%',
-      icon: TrendingUp,
-      description: 'Okuyucu memnuniyet oranı'
+      title: 'Aktif Yazarlar',
+      value: `${new Set(posts.map(post => post.userId)).size}+`,
+      icon: Users,
+      description: 'Platform yazarları'
     }
   ];
 
@@ -90,9 +123,7 @@ const HomePage: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Featured Posts */}
+      </section>      {/* Featured Posts */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
@@ -102,11 +133,25 @@ const HomePage: React.FC = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {featuredPosts.map((post) => (
-              <BlogCard key={post.id} post={post} variant="featured" />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">{error}</p>
+            </div>
+          ) : featuredPosts.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {featuredPosts.map((post) => (
+                <BlogCard key={post.id} post={post} variant="featured" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Henüz makale bulunmamaktadır.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -128,11 +173,13 @@ const HomePage: React.FC = () => {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {recentPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
-            ))}
-          </div>
+          {!loading && !error && recentPosts.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {recentPosts.map((post) => (
+                <BlogCard key={post.id} post={post} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

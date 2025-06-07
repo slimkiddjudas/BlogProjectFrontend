@@ -4,11 +4,14 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --theme-transition-duration: 400ms;
+  --theme-transition-duration: 300ms;
   --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* {
+/* Global smooth transitions for theme switching */
+*,
+*::before,
+*::after {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: var(--theme-transition-timing);
   transition-duration: var(--theme-transition-duration);
@@ -23,7 +26,8 @@ body {
               color var(--theme-transition-duration) var(--theme-transition-timing);
 }
 
-.card, .bg-card, .bg-background, header, footer, section, nav, button, input {
+/* Ensure all interactive elements have smooth transitions */
+button, input, textarea, select, a, [role="button"] {
   transition: all var(--theme-transition-duration) var(--theme-transition-timing);
 }
 
@@ -222,6 +226,37 @@ button:focus-visible {
   animation: theme-transition 0.3s ease-in-out;
 }
 
+/* Improved theme transitions for better visual consistency */
+html.dark,
+html:not(.dark) {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
+              color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced button and input transitions for both themes */
+button, 
+input, 
+textarea, 
+select, 
+[role="button"],
+.btn {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure cards and surfaces transition smoothly */
+.card, 
+[class*="bg-card"], 
+[class*="bg-background"],
+[class*="bg-primary"],
+[class*="bg-secondary"],
+[class*="bg-accent"],
+[class*="bg-muted"] {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+              color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Card hover animations for both themes */
 .card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -234,4 +269,54 @@ button:focus-visible {
 
 .dark .card-hover:hover {
   box-shadow: 0 10px 25px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05);
+}
+
+/* Fix for theme transition flicker */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure smooth transitions on theme change */
+.theme-transitioning * {
+  transition-duration: 300ms !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Enhanced header-specific styles */
+.header-logo-glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.header-backdrop {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+/* Button hover glow effects */
+.btn-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Logo rotation on hover */
+.logo-rotate:hover {
+  animation: gentle-rotate 0.6s ease-in-out;
+}
+
+@keyframes gentle-rotate {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+/* Mobile menu slide animation */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

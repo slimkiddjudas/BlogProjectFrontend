@@ -1,34 +1,60 @@
-import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './components/providers/ThemeProvider';
-import Header from './components/Header';
+import { AuthProvider } from './contexts/auth-context';
+import Layout from './components/Layout';
 import HomePage from './components/HomePage';
-import Footer from './components/Footer';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import PostDetailPage from './pages/PostDetailPage';
+import ProfilePage from './pages/ProfilePage';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
-import { useTheme } from './hooks/useTheme';
-
-// Wrapper component for theme transition
-const ThemeTransitionWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isTransitioning } = useTheme();
-  
-  return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
-      isTransitioning ? 'theme-transitioning' : ''
-    }`}>
-      {children}
-    </div>
-  );
-};
 
 function App() {
   return (
     <ThemeProvider>
-      <ThemeTransitionWrapper>
-        <Header />
-        <main className="flex-1">
-          <HomePage />
-        </main>
-        <Footer />
-      </ThemeTransitionWrapper>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen flex flex-col">
+            <Routes>
+              {/* Auth pages without header/footer */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+                {/* Protected pages with header/footer */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <HomePage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />              <Route
+                path="/post/:slug"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <PostDetailPage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ProfilePage />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
