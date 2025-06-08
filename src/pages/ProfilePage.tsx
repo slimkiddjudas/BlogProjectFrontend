@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { User, Mail, Shield, Calendar, Edit, Save, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import { Card } from '../components/ui/card';
 import { useAuth } from '../contexts/auth-context';
-import { AuthService } from '../services/authService';
+import { useSocket } from '@/hooks/useSocket';
+// import { AuthService } from '../services/authService';
 
 interface UserProfile {
   id: number;
@@ -16,42 +17,43 @@ interface UserProfile {
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { activeUsersCount } = useSocket();
+  const [profile, setProfile] = useState<UserProfile | null>(user);
+  // const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     firstName: '',
     lastName: '',
     email: ''
   });
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);  const fetchProfile = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await AuthService.getCurrentUser();
+  // useEffect(() => {
+  //   fetchProfile();
+  // }, []);  const fetchProfile = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     setError(null);
+  //     const response = await AuthService.getCurrentUser();
       
-      if (!response) {
-        setError('Profil bilgileri bulunamadı');
-        return;
-      }
+  //     if (!response) {
+  //       setError('Profil bilgileri bulunamadı');
+  //       return;
+  //     }
       
-      setProfile(response);
-      setEditForm({
-        firstName: response.firstName,
-        lastName: response.lastName,
-        email: response.email
-      });
-    } catch (error) {
-      console.error('Profile fetch error:', error);
-      setError('Profil bilgileri yüklenirken bir hata oluştu');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setProfile(response);
+  //     setEditForm({
+  //       firstName: response.firstName,
+  //       lastName: response.lastName,
+  //       email: response.email
+  //     });
+  //   } catch (error) {
+  //     console.error('Profile fetch error:', error);
+  //     setError('Profil bilgileri yüklenirken bir hata oluştu');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -83,7 +85,7 @@ const ProfilePage: React.FC = () => {
       setIsEditing(false);
     } catch (error) {
       console.error('Profile update error:', error);
-      setError('Profil güncellenirken bir hata oluştu');
+      // setError('Profil güncellenirken bir hata oluştu');
     }
   };
 
@@ -100,30 +102,30 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-background flex items-center justify-center">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="p-6 max-w-md mx-auto">
-          <div className="text-center">
-            <div className="text-destructive mb-4">⚠️</div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">Hata</h3>
-            <p className="text-muted-foreground">{error}</p>
-            <Button onClick={fetchProfile} className="mt-4">
-              Tekrar Dene
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="min-h-screen bg-background flex items-center justify-center">
+  //       <Card className="p-6 max-w-md mx-auto">
+  //         <div className="text-center">
+  //           <div className="text-destructive mb-4">⚠️</div>
+  //           <h3 className="text-lg font-semibold text-foreground mb-2">Hata</h3>
+  //           <p className="text-muted-foreground">{error}</p>
+  //           <Button onClick={fetchProfile} className="mt-4">
+  //             Tekrar Dene
+  //           </Button>
+  //         </div>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
 
   if (!profile) {
     return (
@@ -152,6 +154,10 @@ const ProfilePage: React.FC = () => {
             <p className="text-muted-foreground mt-2">
               Hesap bilgilerinizi görüntüleyin ve düzenleyin
             </p>
+            <div className="text-sm text-muted-foreground mt-1">
+              Aktif Kullanıcı Sayısı: <span className="font-semibold">{activeUsersCount}</span>
+            </div>
+
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
