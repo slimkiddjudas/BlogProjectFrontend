@@ -114,3 +114,17 @@ export interface CreateCommentRequest {
 export interface CsrfTokenResponse {
   csrfToken: string;
 }
+
+// Gallery types
+export interface GalleryItem {
+  id: number;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GalleryResponse {
+  items: GalleryItem[];
+}

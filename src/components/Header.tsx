@@ -34,27 +34,41 @@ const Header: React.FC = () => {
             </div>
           </Link>          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            {[
-              { label: 'Ana Sayfa', href: '#', active: true },
-              { label: 'Kategoriler', href: '#', active: false },
-              { label: 'Hakkında', href: '#', active: false },
-              { label: 'İletişim', href: '#', active: false },
-            ].map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={`text-sm font-medium transition-all duration-300 relative group ${
-                  item.active
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {item.label}
-                <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 ${
-                  item.active ? 'w-full' : 'w-0 group-hover:w-full'
-                }`} />
-              </a>
-            ))}
+            <Link
+              to="/"
+              className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
+            >
+              Ana Sayfa
+              <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
+            </Link>
+            <Link
+              to="/gallery"
+              className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
+            >
+              Galeri
+              <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
+            </Link>
+            <a
+              href="#"
+              className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
+            >
+              Kategoriler
+              <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
+            </a>
+            <a
+              href="#"
+              className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
+            >
+              Hakkında
+              <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
+            </a>
+            <a
+              href="#"
+              className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
+            >
+              İletişim
+              <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
+            </a>
           </nav>{/* Actions */}
           <div className="flex items-center space-x-3 flex-shrink-0">
             <ThemeToggle />
@@ -115,30 +129,40 @@ const Header: React.FC = () => {
         </div>        {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-border/50 py-6 px-4 bg-gradient-to-b from-background/50 to-background backdrop-blur-sm animate-in slide-in-from-top-2 duration-300">
-            <div className="flex flex-col space-y-6">
-              {/* Mobile Navigation Links */}
+            <div className="flex flex-col space-y-6">              {/* Mobile Navigation Links */}
               <div className="flex flex-col space-y-4">
-                {[
-                  { label: 'Ana Sayfa', href: '#', active: true },
-                  { label: 'Kategoriler', href: '#', active: false },
-                  { label: 'Hakkında', href: '#', active: false },
-                  { label: 'İletişim', href: '#', active: false },
-                ].map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative ${
-                      item.active
-                        ? 'text-foreground bg-accent/50 border border-border/50'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'
-                    }`}
-                  >
-                    {item.label}
-                    {item.active && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-blue-600 to-purple-600 rounded-r-full" />
-                    )}
-                  </a>
-                ))}
+                <Link
+                  to="/"
+                  className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Ana Sayfa
+                </Link>
+                <Link
+                  to="/gallery"
+                  className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Galeri
+                </Link>
+                <a
+                  href="#"
+                  className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                >
+                  Kategoriler
+                </a>
+                <a
+                  href="#"
+                  className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                >
+                  Hakkında
+                </a>
+                <a
+                  href="#"
+                  className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                >
+                  İletişim
+                </a>
               </div>
                 {isAuthenticated ? (
                 <div className="flex flex-col space-y-4 pt-4 border-t border-border/30">

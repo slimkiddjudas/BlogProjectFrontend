@@ -56,3 +56,15 @@ export const getImageUrl = (imagePath: string): string => {
   
   return `http://localhost:3000/static/images/${fileName}`;
 };
+
+/**
+ * Get gallery image URL from image path
+ */
+export const getGalleryImageUrl = (imagePath: string): string => {
+  if (!imagePath) return '';
+  
+  // Extract filename from the path (remove backslashes and get the last part)
+  const fileName = imagePath.split('\\').pop() || imagePath.split('/').pop() || '';
+  
+  return `http://localhost:3000/static/images/${fileName}`;
+};

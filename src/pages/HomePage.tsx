@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Users, BookOpen } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import BlogCard from './BlogCard';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import BlogCard from '@/components/BlogCard';
 import { postService } from '@/services/postService';
 import type { Post } from '@/types';
 import { useTheme } from '../hooks/useTheme';
