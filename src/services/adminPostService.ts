@@ -106,7 +106,6 @@ export class AdminPostService {
       throw new Error('Yazı silinemedi');
     }
   }
-
   static async searchPosts(query: string, page: number = 1, limit: number = 10): Promise<AdminPostsResponse> {
     try {
       const response = await api.get(`/posts/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
@@ -114,6 +113,16 @@ export class AdminPostService {
     } catch (error) {
       console.error('Search posts error:', error);
       throw new Error('Yazı araması gerçekleştirilemedi');
+    }
+  }
+
+  static async getPostsByCategory(categoryId: number): Promise<AdminPostsResponse> {
+    try {
+      const response = await api.get(`/posts/category/${categoryId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get posts by category error:', error);
+      throw new Error('Kategori yazıları getirilemedi');
     }
   }
 }

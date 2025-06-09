@@ -196,10 +196,9 @@ const AdminPostsPage: React.FC = () => {
     total: totalPosts,
     totalViews: posts.reduce((sum, p) => sum + (p.viewCount || 0), 0),
   };
-
   if (loading) {
     return (
-      <AdminLayout currentSection="posts">
+      <AdminLayout>
         <div className="flex items-center justify-center min-h-64">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <span className="ml-2 text-muted-foreground">Yazılar yükleniyor...</span>
@@ -210,7 +209,7 @@ const AdminPostsPage: React.FC = () => {
 
   if (error) {
     return (
-      <AdminLayout currentSection="posts">
+      <AdminLayout>
         <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
           <p className="text-destructive">{error}</p>
           <button 
@@ -225,7 +224,7 @@ const AdminPostsPage: React.FC = () => {
   }
 
   return (
-    <AdminLayout currentSection="posts">
+    <AdminLayout>
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">

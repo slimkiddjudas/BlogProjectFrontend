@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Search, Edit, Trash2, FolderOpen, FileText, Loader2 } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import { AdminCategoryService } from '../../services/adminCategoryService';
+import { AdminPostService } from '../../services/adminPostService';
 import type { AdminCategory } from '../../services/adminCategoryService';
 
 interface CategoryData extends AdminCategory {
@@ -17,17 +18,31 @@ const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories]
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchCategories();
-  }, []);
-  const fetchCategories = async () => {
+  }, []);  const fetchCategories = async () => {
     try {
       setLoading(true);
       setError(null);
       const fetchedCategories = await AdminCategoryService.getAllCategories();
-      // Transform API data to include postCount (default to 0 for now)
-      const categoriesWithPostCount = fetchedCategories.map(cat => ({
-        ...cat,
-        postCount: 0 // TODO: Get actual post count from backend
-      }));
+      
+      // Her kategori için post sayısını al
+      const categoriesWithPostCount = await Promise.all(
+        fetchedCategories.map(async (cat) => {
+          try {
+            const postsResponse = await AdminPostService.getPostsByCategory(cat.id);
+            return {
+              ...cat,
+              postCount: postsResponse.totalPosts
+            };
+          } catch (error) {
+            console.error(`Error fetching posts for category ${cat.id}:`, error);
+            return {
+              ...cat,
+              postCount: 0
+            };
+          }
+        })
+      );
+      
       setCategories(categoriesWithPostCount);
     } catch (err) {
       setError('Kategoriler yüklenirken bir hata oluştu.');

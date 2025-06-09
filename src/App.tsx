@@ -20,7 +20,6 @@ import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminAnnouncementsPage from './pages/admin/AdminAnnouncementsPage';
 import AdminPostsPage from './pages/admin/AdminPostsPage';
 import AdminGalleryPage from './pages/admin/AdminGalleryPage';
-import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
 import './App.css';
 
 function App() {
@@ -148,16 +147,7 @@ function App() {
                     <AdminRoute>
                       <AdminGalleryPage />
                     </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/analytics"
-                  element={
-                    <AdminRoute>
-                      <AdminAnalyticsPage />
-                    </AdminRoute>
-                  }
-                />
+                  }                />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

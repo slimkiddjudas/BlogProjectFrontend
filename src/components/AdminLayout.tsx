@@ -7,26 +7,22 @@ import {
   FolderOpen, 
   Megaphone, 
   Images, 
-  BarChart3,
   ChevronLeft
 } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  currentSection?: string;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children, currentSection }) => {
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Kullanıcılar', href: '/admin/users', icon: Users },
-    { name: 'İçerikler', href: '/admin/posts', icon: FileText },
-    { name: 'Kategoriler', href: '/admin/categories', icon: FolderOpen },
+    { name: 'İçerikler', href: '/admin/posts', icon: FileText },    { name: 'Kategoriler', href: '/admin/categories', icon: FolderOpen },
     { name: 'Duyurular', href: '/admin/announcements', icon: Megaphone },
-    { name: 'Galeri', href: '/admin/gallery', icon: Images },
-    { name: 'İstatistikler', href: '/admin/analytics', icon: BarChart3 }
+    { name: 'Galeri', href: '/admin/gallery', icon: Images }
   ];
 
   const isActive = (href: string) => {
