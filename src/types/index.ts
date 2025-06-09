@@ -42,6 +42,7 @@ export interface PostCategory {
 export interface Post {
   id: number;
   title: string;
+  image?: string;
   content: string;
   viewCount: number;
   slug: string;

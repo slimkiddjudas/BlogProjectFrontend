@@ -1,8 +1,9 @@
 import React from 'react';
-import { Calendar, Clock, Eye, User } from 'lucide-react';
+import { Calendar, Clock, Eye, User, ImageIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { getAuthorInitials, getAuthorName, formatPostDate, calculateReadTime, formatViewCount } from '@/utils/postUtils';
+import { Image } from '@/components/ui/image';
+import { getAuthorInitials, getAuthorName, formatPostDate, calculateReadTime, formatViewCount, getImageUrl } from '@/utils/postUtils';
 import type { Post } from '@/types';
 
 interface PostHeaderProps {
@@ -13,7 +14,6 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
   const authorInitials = getAuthorInitials(post.writer);
   const authorName = getAuthorName(post.writer);
   const readTime = calculateReadTime(post.content);
-
   return (
     <header className="mb-8">
       {/* Category Badge */}
@@ -29,7 +29,16 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
       {/* Title */}
       <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-6 text-foreground">
         {post.title}
-      </h1>
+      </h1>      {/* Post Image */}
+      {post.image && (
+        <Image
+          src={getImageUrl(post.image)}
+          alt={post.title}
+          containerClassName="mb-8 rounded-xl overflow-hidden shadow-2xl bg-gradient-to-br from-primary/5 to-secondary/5"
+          className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover hover:scale-105 transition-transform duration-700"
+          fallbackIcon={<ImageIcon className="h-20 w-20" />}
+        />
+      )}
 
       {/* Author and Meta Info */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">

@@ -27,10 +27,9 @@ const PostDetailPage: React.FC = () => {
   if (error || !post) {
     return <PostError error={error} />;
   }
-
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto px-4 py-6 md:py-12 max-w-5xl">
         {/* Post Header with meta information */}
         <PostHeader post={post} />
 
@@ -41,8 +40,8 @@ const PostDetailPage: React.FC = () => {
         <PostFooter post={post} />
 
         {/* Comments Section */}
-        <section className="mt-12" aria-label="Yorumlar Bölümü">
-          <Separator className="mb-8" />
+        <section className="mt-16" aria-label="Yorumlar Bölümü">
+          <Separator className="mb-12" />
           <CommentsList postId={post.id} />
         </section>
       </div>

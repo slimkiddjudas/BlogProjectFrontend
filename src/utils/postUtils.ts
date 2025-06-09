@@ -44,3 +44,15 @@ export const formatViewCount = (count: number): string => {
 export const scrollToTop = (): void => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+/**
+ * Get image URL from image path
+ */
+export const getImageUrl = (imagePath: string): string => {
+  if (!imagePath) return '';
+  
+  // Extract filename from the path (remove backslashes and get the last part)
+  const fileName = imagePath.split('\\').pop() || imagePath.split('/').pop() || '';
+  
+  return `http://localhost:3000/static/images/${fileName}`;
+};

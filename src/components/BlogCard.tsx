@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Image } from '@/components/ui/image';
+import { getImageUrl } from '@/utils/postUtils';
 import type { Post } from '@/types';
 
 interface BlogCardProps {
@@ -36,19 +38,19 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, variant = 'default' }) => {
   const authorName = `${post.writer.firstName} ${post.writer.lastName}`;
   const readTime = calculateReadTime(post.content);
   const excerpt = generateExcerpt(post.content);
-
   if (isFeature) {
     return (
       <Card 
         className="overflow-hidden group hover:shadow-lg transition-all duration-300 card-hover content-transition cursor-pointer"
         onClick={handleCardClick}
-      >
-        <div className="relative">
-          <div className="aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10">
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <Clock className="h-16 w-16" />
-            </div>
-          </div>
+      >        <div className="relative">
+          <Image
+            src={post.image ? getImageUrl(post.image) : ''}
+            alt={post.title}
+            containerClassName="aspect-video overflow-hidden"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fallbackIcon={<Clock className="h-16 w-16" />}
+          />
           <div className="absolute top-4 left-4">
             <Badge className="bg-primary text-primary-foreground transition-all duration-200 hover:scale-105">
               Öne Çıkan
@@ -106,14 +108,15 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, variant = 'default' }) => {
       <Card 
         className="group hover:shadow-md transition-all duration-300 card-hover cursor-pointer"
         onClick={handleCardClick}
-      >
-        <CardContent className="p-4">
+      >        <CardContent className="p-4">
           <div className="flex space-x-4">
-            <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10">
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <Clock className="h-8 w-8" />
-              </div>
-            </div>
+            <Image
+              src={post.image ? getImageUrl(post.image) : ''}
+              alt={post.title}
+              containerClassName="w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fallbackIcon={<Clock className="h-8 w-8" />}
+            />
             
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold leading-tight group-hover:text-primary transition-colors duration-200 line-clamp-2">
@@ -131,17 +134,17 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, variant = 'default' }) => {
       </Card>
     );
   }
-
-  return (
-    <Card 
+  return (    <Card 
       className="overflow-hidden group hover:shadow-lg transition-all duration-300 card-hover content-transition cursor-pointer"
       onClick={handleCardClick}
     >
-      <div className="aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10">
-        <div className="w-full h-full flex items-center justify-center text-muted-foreground group-hover:scale-105 transition-transform duration-500">
-          <Clock className="h-16 w-16" />
-        </div>
-      </div>
+      <Image
+        src={post.image ? getImageUrl(post.image) : ''}
+        alt={post.title}
+        containerClassName="aspect-video overflow-hidden"
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        fallbackIcon={<Clock className="h-16 w-16" />}
+      />
       
       <CardHeader className="pb-4">
         <div className="flex items-center space-x-2 mb-3">
