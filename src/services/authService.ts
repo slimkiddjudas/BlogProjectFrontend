@@ -33,13 +33,30 @@ export class AuthService {  static async login(credentials: LoginCredentials): P
     } catch {
       return null;
     }
-  }
-  static async checkAuth(): Promise<boolean> {
+  }  static async checkAuth(): Promise<boolean> {
     try {
       const user = await this.getCurrentUser();
       return user !== null;
     } catch {
       return false;
+    }
+  }
+
+  static async updateProfile(data: { firstName: string; lastName: string; email: string }): Promise<{ user: User; message: string }> {
+    try {
+      const response = await api.put('/auth/update-profile', data);
+      return response.data;
+    } catch {
+      throw new Error('Profil güncellenemedi');
+    }
+  }
+
+  static async changePassword(data: { oldPassword: string; newPassword: string }): Promise<{ message: string }> {
+    try {
+      const response = await api.put('/auth/change-password', data);
+      return response.data;
+    } catch {
+      throw new Error('Şifre değiştirilemedi');
     }
   }
 }

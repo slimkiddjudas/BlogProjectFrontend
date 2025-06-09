@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import { Card } from '../components/ui/card';
 import { useAuth } from '../contexts/auth-context';
 import { useSocket } from '@/hooks/useSocket';
-// import { AuthService } from '../services/authService';
+import { AuthService } from '../services/authService';
 
 interface UserProfile {
   id: number;
@@ -19,19 +19,31 @@ const ProfilePage: React.FC = () => {
   const { user } = useAuth();
   const { activeUsersCount } = useSocket();
   const [profile, setProfile] = useState<UserProfile | null>(user);
-  // const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [editForm, setEditForm] = useState({
     firstName: '',
     lastName: '',
     email: ''
   });
-  // const [error, setError] = useState<string | null>(null);
-
-  // Sayfa yüklendiğinde en üste scroll yap
+  // Sayfa yüklendiğinde en üste scroll yap ve editForm'u doldur
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (user) {
+      setEditForm({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      });
+    }
+  }, [user]);
 
   // useEffect(() => {
   //   fetchProfile();
@@ -59,11 +71,16 @@ const ProfilePage: React.FC = () => {
   //     setIsLoading(false);
   //   }
   // };
-
   const handleEdit = () => {
+    if (profile) {
+      setEditForm({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        email: profile.email
+      });
+    }
     setIsEditing(true);
   };
-
   const handleCancel = () => {
     setIsEditing(false);
     if (profile) {
@@ -75,22 +92,83 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handlePasswordChange = () => {
+    setShowPasswordModal(true);
+    setPasswordForm({
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+  };
+
+  const handlePasswordSave = async () => {
+    if (!passwordForm.oldPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+      alert('Tüm şifre alanları zorunludur.');
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      alert('Yeni şifreler eşleşmiyor.');
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      alert('Yeni şifre en az 6 karakter olmalıdır.');
+      return;
+    }
+
     try {
-      // Burada profil güncelleme API'si çağrılacak
-      // Şimdilik sadece local state'i güncelleyelim
-      if (profile) {
-        setProfile({
-          ...profile,
-          firstName: editForm.firstName,
-          lastName: editForm.lastName,
-          email: editForm.email
-        });
-      }
+      setPasswordLoading(true);
+      await AuthService.changePassword({
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword
+      });
+      
+      setShowPasswordModal(false);
+      setPasswordForm({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      alert('Şifre başarıyla değiştirildi.');
+    } catch (error) {
+      console.error('Password change error:', error);
+      alert('Şifre değiştirirken bir hata oluştu. Lütfen eski şifrenizi kontrol edin.');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  const closePasswordModal = () => {
+    setShowPasswordModal(false);
+    setPasswordForm({
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+  };
+  const handleSave = async () => {
+    if (!editForm.firstName.trim() || !editForm.lastName.trim() || !editForm.email.trim()) {
+      alert('Tüm alanlar zorunludur.');
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      const response = await AuthService.updateProfile({
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        email: editForm.email
+      });
+      
+      setProfile(response.user);
       setIsEditing(false);
+      alert('Profil başarıyla güncellendi.');
     } catch (error) {
       console.error('Profile update error:', error);
-      // setError('Profil güncellenirken bir hata oluştu');
+      alert('Profil güncellenirken bir hata oluştu.');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -195,12 +273,20 @@ const ProfilePage: React.FC = () => {
                     Üye olma tarihi: Ocak 2024
                   </div>                  <Button
                     onClick={handleEdit}
-                    disabled={isEditing}
+                    disabled={isEditing || isUpdating}
                     variant="default"
-                    className="w-full"
+                    className="w-full mb-3"
                   >
                     <Edit className="h-4 w-4 mr-2" />
-                    Profili Düzenle
+                    {isUpdating ? 'Güncelleniyor...' : 'Profili Düzenle'}
+                  </Button>
+                  
+                  <Button
+                    onClick={handlePasswordChange}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Şifre Değiştir
                   </Button>
                 </div>
               </Card>
@@ -212,11 +298,10 @@ const ProfilePage: React.FC = () => {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-foreground">Kişisel Bilgiler</h3>
                   {isEditing && (
-                    <div className="flex space-x-2">
-                      <Button onClick={handleSave} size="sm" className="bg-green-600 hover:bg-green-700">
+                    <div className="flex space-x-2">                      <Button onClick={handleSave} size="sm" className="bg-green-600 hover:bg-green-700" disabled={isUpdating}>
                         <Save className="h-4 w-4 mr-1" />
-                        Kaydet
-                      </Button>                      <Button onClick={handleCancel} size="sm" variant="default">
+                        {isUpdating ? 'Kaydediliyor...' : 'Kaydet'}
+                      </Button><Button onClick={handleCancel} size="sm" variant="default">
                         <X className="h-4 w-4 mr-1" />
                         İptal
                       </Button>
@@ -286,9 +371,7 @@ const ProfilePage: React.FC = () => {
                         {profile.email}
                       </div>
                     )}
-                  </div>
-
-                  {/* Role (Read-only) */}
+                  </div>                  {/* Role (Read-only) */}
                   <div className="group">
                     <label className="block text-sm font-medium text-foreground mb-2">
                       <Shield className="h-4 w-4 inline mr-2" />
@@ -301,60 +384,84 @@ const ProfilePage: React.FC = () => {
                       Rol bilgisi sistem yöneticisi tarafından değiştirilir
                     </p>
                   </div>
-
-                  {/* User ID (Read-only) */}
-                  <div className="group">
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Kullanıcı ID
-                    </label>
-                    <div className="w-full px-4 py-3 rounded-lg bg-accent/20 border border-border/30 text-muted-foreground font-mono">
-                      #{profile.id}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-
-          {/* Additional Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            {/* Account Security */}
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Hesap Güvenliği</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Şifre</span>                  <Button variant="default" size="sm">
-                    Değiştir
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">İki faktörlü doğrulama</span>                  <Button variant="default" size="sm">
-                    Aktifleştir
-                  </Button>
-                </div>
-              </div>
-            </Card>
-
-            {/* Activity */}
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Aktivite</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Son giriş</span>
-                  <span className="text-sm text-foreground">Bugün, 14:30</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Toplam yazı</span>
-                  <span className="text-sm text-foreground">12</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Toplam görüntülenme</span>
-                  <span className="text-sm text-foreground">1,234</span>
-                </div>
-              </div>
-            </Card>
+                </div>              </Card>            </div>
           </div>
         </div>
+
+        {/* Password Change Modal */}
+        {showPasswordModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="p-6 w-full max-w-md bg-card/95 backdrop-blur-sm border-border/50 shadow-xl">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-foreground">Şifre Değiştir</h3>
+                <button
+                  onClick={closePasswordModal}
+                  className="p-2 hover:bg-muted rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Mevcut Şifre *
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordForm.oldPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Mevcut şifrenizi girin"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Yeni Şifre *
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordForm.newPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Yeni şifrenizi girin"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Yeni Şifre Tekrar *
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Yeni şifrenizi tekrar girin"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-3 mt-6">
+                <Button
+                  onClick={closePasswordModal}
+                  variant="outline"
+                  disabled={passwordLoading}
+                >
+                  İptal
+                </Button>
+                <Button
+                  onClick={handlePasswordSave}
+                  disabled={passwordLoading || !passwordForm.oldPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                  className="bg-primary text-primary-foreground"
+                >
+                  {passwordLoading ? 'Değiştiriliyor...' : 'Şifre Değiştir'}
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
