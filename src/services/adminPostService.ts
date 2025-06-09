@@ -5,7 +5,10 @@ export interface AdminPost {
   id: number;
   title: string;
   content: string;
-  authorId: number;
+  authorId?: number;
+  userId?: number;
+  categoryId?: number;
+  image?: string;
   viewCount?: number;
   createdAt: string;
   updatedAt: string;
@@ -21,11 +24,13 @@ export interface AdminPostsResponse {
 export interface CreatePostRequest {
   title: string;
   content: string;
+  categoryId: number;
 }
 
 export interface UpdatePostRequest {
   title?: string;
   content?: string;
+  categoryId?: number;
 }
 
 export class AdminPostService {
@@ -47,13 +52,23 @@ export class AdminPostService {
       console.error('Get post error:', error);
       throw new Error('Yazı getirilemedi');
     }
-  }
-  static async createPost(postData: CreatePostRequest): Promise<AdminPost> {
+  }  static async createPost(postData: CreatePostRequest, imageFile?: File): Promise<AdminPost> {
     try {
       const csrfToken = await CsrfService.getCsrfToken();
-      const response = await api.post('/posts', postData, {
+      
+      const formData = new FormData();
+      formData.append('title', postData.title);
+      formData.append('content', postData.content);
+      formData.append('categoryId', postData.categoryId.toString());
+      
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+      
+      const response = await api.post('/posts', formData, {
         headers: {
-          'X-CSRF-Token': csrfToken
+          'X-CSRF-Token': csrfToken,
+          'Content-Type': 'multipart/form-data'
         }
       });
       return response.data;

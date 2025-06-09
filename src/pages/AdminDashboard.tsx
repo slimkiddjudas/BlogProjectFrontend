@@ -93,13 +93,15 @@ const AdminDashboard: React.FC = () => {
       console.error('Error fetching category stats:', error);
       setCategoryStats(prev => ({ ...prev, loading: false }));
     }
-  };
-  const handleCreateAnnouncement = () => {
+  };  const handleCreateAnnouncement = () => {
     navigate('/admin/announcements');
   };
 
   const handleCreateCategory = () => {
     navigate('/admin/categories');
+  };
+  const handleCreatePost = () => {
+    navigate('/admin/posts?new=true');
   };const dashboardCards = [
     {
       title: 'Kullanıcı Yönetimi',
@@ -161,7 +163,7 @@ const AdminDashboard: React.FC = () => {
       stats: { label: 'Günlük Ziyaret', value: '1.2K' }
     }
   ];  const quickActions = [
-    { title: 'Yeni Post Ekle', icon: Plus, href: '/admin/posts/new', color: 'bg-blue-500' },
+    { title: 'Yeni Post Ekle', icon: Plus, action: handleCreatePost, color: 'bg-blue-500' },
     { title: 'Duyuru Yayınla', icon: Megaphone, action: handleCreateAnnouncement, color: 'bg-orange-500' },
     { title: 'Kategori Ekle', icon: FolderOpen, action: handleCreateCategory, color: 'bg-purple-500' },
     { title: 'Medya Yükle', icon: Images, href: '/admin/gallery/upload', color: 'bg-pink-500' }
