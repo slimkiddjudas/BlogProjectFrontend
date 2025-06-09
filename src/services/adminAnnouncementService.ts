@@ -2,13 +2,9 @@ import { api } from '../lib/api';
 import { CsrfService } from './csrfService';
 import type { Announcement } from '../types';
 
-export interface AdminAnnouncement extends Announcement {
-  views?: number;
-}
-
 export interface AdminAnnouncementsResponse {
   totalAnnouncements: number;
-  announcements: AdminAnnouncement[];
+  announcements: Announcement[];
 }
 
 export interface CreateAnnouncementRequest {
@@ -31,8 +27,7 @@ export class AdminAnnouncementService {
       throw new Error('Duyurular getirilemedi');
     }
   }
-
-  static async getAnnouncementById(id: number): Promise<AdminAnnouncement> {
+  static async getAnnouncementById(id: number): Promise<Announcement> {
     try {
       const response = await api.get(`/announcements/${id}`);
       return response.data;
@@ -40,8 +35,7 @@ export class AdminAnnouncementService {
       console.error('Get announcement error:', error);
       throw new Error('Duyuru getirilemedi');
     }
-  }
-  static async createAnnouncement(announcementData: CreateAnnouncementRequest): Promise<AdminAnnouncement> {
+  }  static async createAnnouncement(announcementData: CreateAnnouncementRequest): Promise<Announcement> {
     try {
       const csrfToken = await CsrfService.getCsrfToken();
       const response = await api.post('/announcements', announcementData, {
@@ -54,8 +48,7 @@ export class AdminAnnouncementService {
       console.error('Create announcement error:', error);
       throw new Error('Duyuru oluşturulamadı');
     }
-  }
-  static async updateAnnouncement(id: number, announcementData: UpdateAnnouncementRequest): Promise<AdminAnnouncement> {
+  }  static async updateAnnouncement(id: number, announcementData: UpdateAnnouncementRequest): Promise<Announcement> {
     try {
       const csrfToken = await CsrfService.getCsrfToken();
       const response = await api.put(`/announcements/${id}`, announcementData, {

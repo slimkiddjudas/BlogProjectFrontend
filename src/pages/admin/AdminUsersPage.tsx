@@ -1,68 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Filter, MoreVertical, Shield, User, Crown } from 'lucide-react';
+import { Search, Filter, Shield, User, Crown } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
+import { AdminUserService, type AdminUser } from '../../services/adminUserService';
 
-interface UserData {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-  createdAt: string;
+interface UserData extends AdminUser {
   lastLogin?: string;
   status: 'active' | 'inactive';
 }
 
 const AdminUsersPage: React.FC = () => {
   const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Mock data - daha sonra API'den gelecek
-    setUsers([
-      {
-        id: 1,
-        firstName: 'Umut',
-        lastName: 'Çerk',
-        email: 'umut@cerkblog.com',
-        role: 'admin',
-        createdAt: '2024-01-15',
-        lastLogin: '2024-12-15',
-        status: 'active'
-      },
-      {
-        id: 2,
-        firstName: 'Ahmet',
-        lastName: 'Yılmaz',
-        email: 'ahmet@example.com',
-        role: 'writer',
-        createdAt: '2024-02-20',
-        lastLogin: '2024-12-14',
-        status: 'active'
-      },
-      {
-        id: 3,
-        firstName: 'Ayşe',
-        lastName: 'Kaya',
-        email: 'ayse@example.com',
-        role: 'user',
-        createdAt: '2024-03-10',
-        lastLogin: '2024-12-13',
-        status: 'active'
-      },
-      {
-        id: 4,
-        firstName: 'Mehmet',
-        lastName: 'Demir',
-        email: 'mehmet@example.com',
-        role: 'user',
-        createdAt: '2024-04-05',
-        status: 'inactive'
-      }
-    ]);
+    fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const usersData = await AdminUserService.getAllUsers();
+      // Backend'den gelen kullanıcıları UserData formatına dönüştür
+      const formattedUsers: UserData[] = usersData.map(user => ({
+        ...user,
+        createdAt: user.createdAt || new Date().toISOString(),
+        status: 'active' as const // Backend'de status field'ı yoksa default active
+      }));
+      setUsers(formattedUsers);
+    } catch (err) {
+      setError('Kullanıcılar yüklenirken hata oluştu');
+      console.error('Error fetching users:', err);    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRoleChange = async (userId: number, newRole: string) => {
+    try {
+      await AdminUserService.updateUserRole(userId, newRole);
+      setUsers(users.map(user => 
+        user.id === userId 
+          ? { ...user, role: newRole }
+          : user
+      ));
+    } catch (err) {
+      setError('Kullanıcı rolü güncellenirken hata oluştu');
+      console.error('Error updating user role:', err);
+    }
+  };
 
   const getRoleIcon = (role: string) => {
     switch (role) {
@@ -114,8 +103,8 @@ const AdminUsersPage: React.FC = () => {
     const matchesRole = filterRole === 'all' || user.role === filterRole;
     return matchesSearch && matchesRole;
   });
-
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'Bilinmiyor';
     return new Date(dateString).toLocaleDateString('tr-TR', {
       year: 'numeric',
       month: 'long',
@@ -133,6 +122,24 @@ const AdminUsersPage: React.FC = () => {
             Sistem kullanıcılarını görüntüle, düzenle ve yönet
           </p>
         </div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+            <p className="text-red-800 dark:text-red-200">{error}</p>
+          </div>
+        )}
+
+        {/* Main Content */}
+        {!loading && (
+          <>
 
         {/* Filters */}
         <div className="bg-card border border-border rounded-xl p-6 mb-6">
@@ -231,9 +238,8 @@ const AdminUsersPage: React.FC = () => {
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Son Giriş
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    İşlemler
+                  </th>                  <th className="px-6 py-4 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Rol Yönetimi
                   </th>
                 </tr>
               </thead>
@@ -267,20 +273,23 @@ const AdminUsersPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {user.lastLogin ? formatDate(user.lastLogin) : 'Hiç giriş yapmamış'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button className="text-muted-foreground hover:text-foreground transition-colors duration-200">
-                        <MoreVertical className="h-4 w-4" />
-                      </button>
+                    </td>                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                        className="text-sm border border-border rounded-lg px-3 py-1 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="user">Kullanıcı</option>
+                        <option value="writer">Yazar</option>
+                        <option value="admin">Admin</option>
+                      </select>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
-
-        {filteredUsers.length === 0 && (
+        </div>        {filteredUsers.length === 0 && !loading && (
           <div className="text-center py-12">
             <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-2">Kullanıcı bulunamadı</h3>
@@ -288,6 +297,8 @@ const AdminUsersPage: React.FC = () => {
               Arama kriterlerinize uygun kullanıcı bulunamadı.
             </p>
           </div>
+        )}
+          </>
         )}
       </div>
     </AdminLayout>

@@ -6,6 +6,7 @@ export interface AdminPost {
   title: string;
   content: string;
   authorId: number;
+  viewCount?: number;
   createdAt: string;
   updatedAt: string;
 }

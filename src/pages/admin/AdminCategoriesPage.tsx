@@ -1,68 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Search, Edit, Trash2, FolderOpen, FileText } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, FolderOpen, FileText, Loader2 } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
+import { AdminCategoryService } from '../../services/adminCategoryService';
+import type { AdminCategory } from '../../services/adminCategoryService';
 
-interface CategoryData {
-  id: number;
-  name: string;
-  description?: string;
+interface CategoryData extends AdminCategory {
   postCount: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
-const AdminCategoriesPage: React.FC = () => {
-  const [categories, setCategories] = useState<CategoryData[]>([]);
+const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: '', description: '' });
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Mock data - daha sonra API'den gelecek
-    setCategories([
-      {
-        id: 1,
-        name: 'Web Geliştirme',
-        description: 'Frontend ve backend web teknolojileri',
-        postCount: 24,
-        createdAt: '2024-01-15',
-        updatedAt: '2024-12-01'
-      },
-      {
-        id: 2,
-        name: 'JavaScript',
-        description: 'JavaScript ve related teknolojiler',
-        postCount: 18,
-        createdAt: '2024-02-20',
-        updatedAt: '2024-11-28'
-      },
-      {
-        id: 3,
-        name: 'React',
-        description: 'React framework ve ekosistemi',
-        postCount: 15,
-        createdAt: '2024-03-10',
-        updatedAt: '2024-11-25'
-      },
-      {
-        id: 4,
-        name: 'Node.js',
-        description: 'Server-side JavaScript development',
-        postCount: 12,
-        createdAt: '2024-04-05',
-        updatedAt: '2024-11-22'
-      },
-      {
-        id: 5,
-        name: 'Database',
-        description: 'Veritabanı yönetimi ve optimizasyonu',
-        postCount: 8,
-        createdAt: '2024-05-12',
-        updatedAt: '2024-11-20'
-      }
-    ]);
+    fetchCategories();
   }, []);
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const fetchedCategories = await AdminCategoryService.getAllCategories();
+      // Transform API data to include postCount (default to 0 for now)
+      const categoriesWithPostCount = fetchedCategories.map(cat => ({
+        ...cat,
+        postCount: 0 // TODO: Get actual post count from backend
+      }));
+      setCategories(categoriesWithPostCount);
+    } catch (err) {
+      setError('Kategoriler yüklenirken bir hata oluştu.');
+      console.error('Error fetching categories:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -76,25 +49,32 @@ const AdminCategoriesPage: React.FC = () => {
       day: 'numeric'
     });
   };
-
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (newCategory.name.trim()) {
-      const newCat: CategoryData = {
-        id: Math.max(...categories.map(c => c.id)) + 1,
-        name: newCategory.name,
-        description: newCategory.description,
-        postCount: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setCategories([...categories, newCat]);
-      setNewCategory({ name: '', description: '' });
-      setIsAddModalOpen(false);
+      try {
+        const createdCategory = await AdminCategoryService.createCategory({
+          name: newCategory.name,
+          description: newCategory.description || undefined
+        });
+        const categoryWithPostCount = { ...createdCategory, postCount: 0 };
+        setCategories([...categories, categoryWithPostCount]);
+        setNewCategory({ name: '', description: '' });
+        setIsAddModalOpen(false);
+      } catch (err) {
+        setError('Kategori eklenirken bir hata oluştu.');
+        console.error('Error creating category:', err);
+      }
     }
   };
 
-  const handleDeleteCategory = (id: number) => {
-    setCategories(categories.filter(cat => cat.id !== id));
+  const handleDeleteCategory = async (id: number) => {
+    try {
+      await AdminCategoryService.deleteCategory(id);
+      setCategories(categories.filter(cat => cat.id !== id));
+    } catch (err) {
+      setError('Kategori silinirken bir hata oluştu.');
+      console.error('Error deleting category:', err);
+    }
   };
 
   return (
@@ -165,11 +145,25 @@ const AdminCategoriesPage: React.FC = () => {
                 <FileText className="h-4 w-4 text-white" />
               </div>
             </div>
-          </div>
-        </div>
+          </div>        </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+            <p className="text-red-600 dark:text-red-400">{error}</p>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="ml-2 text-muted-foreground">Kategoriler yükleniyor...</span>
+          </div>
+        ) : (
+          <>
+            {/* Categories Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map((category) => (
             <div key={category.id} className="bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start justify-between mb-4">
@@ -204,20 +198,21 @@ const AdminCategoriesPage: React.FC = () => {
                 </div>
                 <span className="text-xs text-muted-foreground">
                   {formatDate(category.updatedAt)}
-                </span>
-              </div>
+                </span>              </div>
             </div>
           ))}
-        </div>
+            </div>
 
-        {filteredCategories.length === 0 && (
-          <div className="text-center py-12">
-            <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-2">Kategori bulunamadı</h3>
-            <p className="text-muted-foreground">
-              Arama kriterlerinize uygun kategori bulunamadı.
-            </p>
-          </div>
+            {!loading && filteredCategories.length === 0 && (
+              <div className="text-center py-12">
+                <FolderOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">Kategori bulunamadı</h3>
+                <p className="text-muted-foreground">
+                  Arama kriterlerinize uygun kategori bulunamadı.
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {/* Add Category Modal */}

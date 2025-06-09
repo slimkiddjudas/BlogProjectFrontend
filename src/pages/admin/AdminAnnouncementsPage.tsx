@@ -4,24 +4,23 @@ import {
   Search,
   Edit2,
   Trash2,
-  Eye,
   Calendar,
   AlertCircle,
 } from "lucide-react";
 import AdminLayout from "../../components/AdminLayout";
 import {
   AdminAnnouncementService,
-  type AdminAnnouncement,
   type CreateAnnouncementRequest,
 } from "../../services/adminAnnouncementService";
+import type { Announcement } from "../../types";
 const AdminAnnouncementsPage: React.FC = () => {
-  const [announcements, setAnnouncements] = useState<AdminAnnouncement[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] =
-    useState<AdminAnnouncement | null>(null);
+    useState<Announcement | null>(null);
   const [newAnnouncement, setNewAnnouncement] =
     useState<CreateAnnouncementRequest>({ title: "", content: "" });
   useEffect(() => {
@@ -93,10 +92,8 @@ const AdminAnnouncementsPage: React.FC = () => {
     (announcement) =>
       announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       announcement.content.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const stats = {
+  );  const stats = {
     total: announcements.length,
-    totalViews: announcements.reduce((sum, a) => sum + (a.views || 0), 0),
   };
   return (
     <AdminLayout currentSection="announcements">
@@ -142,9 +139,8 @@ const AdminAnnouncementsPage: React.FC = () => {
         {/* Main Content */}{" "}
         {!loading && (
           <>
-            {" "}
-            {/* Stats Cards */}{" "}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {" "}            {/* Stats Cards */}{" "}
+            <div className="grid grid-cols-1 gap-4 mb-6">
               {" "}
               <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
                 {" "}
@@ -162,24 +158,6 @@ const AdminAnnouncementsPage: React.FC = () => {
                     </p>{" "}
                   </div>{" "}
                   <AlertCircle className="w-8 h-8 text-blue-600" />{" "}
-                </div>{" "}
-              </div>{" "}
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-                {" "}
-                <div className="flex items-center justify-between">
-                  {" "}
-                  <div>
-                    {" "}
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                      {" "}
-                      Toplam Görüntülenme{" "}
-                    </p>{" "}
-                    <p className="text-2xl font-bold text-purple-600">
-                      {" "}
-                      {stats.totalViews.toLocaleString()}{" "}
-                    </p>{" "}
-                  </div>{" "}
-                  <Eye className="w-8 h-8 text-purple-600" />{" "}
                 </div>{" "}
               </div>{" "}
             </div>{" "}
@@ -204,18 +182,13 @@ const AdminAnnouncementsPage: React.FC = () => {
               <div className="overflow-x-auto">
                 {" "}
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  {" "}
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                  {" "}                  <thead className="bg-gray-50 dark:bg-gray-700">
                     {" "}
                     <tr>
                       {" "}
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         {" "}
                         Duyuru{" "}
-                      </th>{" "}
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        {" "}
-                        Görüntülenme{" "}
                       </th>{" "}
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         {" "}
@@ -242,16 +215,11 @@ const AdminAnnouncementsPage: React.FC = () => {
                             <div className="text-sm font-medium text-gray-900 dark:text-white">
                               {" "}
                               {announcement.title}{" "}
-                            </div>{" "}
-                            <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                            </div>{" "}                            <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
                               {" "}
                               {announcement.content.substring(0, 100)}...{" "}
                             </div>{" "}
                           </div>{" "}
-                        </td>{" "}
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                          {" "}
-                          {(announcement.views || 0).toLocaleString()}{" "}
                         </td>{" "}
                         <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
                           {" "}
