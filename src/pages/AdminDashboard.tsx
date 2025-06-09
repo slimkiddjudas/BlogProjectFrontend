@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Users, 
   FileText, 
@@ -14,14 +14,39 @@ import {
   Eye
 } from 'lucide-react';
 import { useAuth } from '../contexts/auth-context';
+import { AdminAnnouncementService } from '../services/adminAnnouncementService';
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [announcementStats, setAnnouncementStats] = useState({
+    total: 0,
+    totalViews: 0,
+    loading: true
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchAnnouncementStats();
   }, []);
 
+  const fetchAnnouncementStats = async () => {
+    try {
+      const response = await AdminAnnouncementService.getAllAnnouncements();
+      setAnnouncementStats({
+        total: response.announcements.length,
+        totalViews: response.announcements.reduce((sum, a) => sum + (a.views || 0), 0),
+        loading: false
+      });
+    } catch (error) {
+      console.error('Error fetching announcement stats:', error);
+      setAnnouncementStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  const handleCreateAnnouncement = () => {
+    navigate('/admin/announcements');
+  };
   const dashboardCards = [
     {
       title: 'Kullanıcı Yönetimi',
@@ -53,7 +78,11 @@ const AdminDashboard: React.FC = () => {
       icon: Megaphone,
       color: 'bg-orange-500',
       href: '/admin/announcements',
-      stats: { label: 'Aktif Duyuru', value: '8' }
+      stats: { 
+        label: announcementStats.loading ? 'Yükleniyor...' : 'Toplam Duyuru', 
+        value: announcementStats.loading ? '-' : announcementStats.total.toString(),
+        subLabel: announcementStats.loading ? '' : `${announcementStats.totalViews.toLocaleString()} görüntülenme`
+      }
     },
     {
       title: 'Galeri Yönetimi',
@@ -72,10 +101,9 @@ const AdminDashboard: React.FC = () => {
       stats: { label: 'Günlük Ziyaret', value: '1.2K' }
     }
   ];
-
   const quickActions = [
     { title: 'Yeni Post Ekle', icon: Plus, href: '/admin/posts/new', color: 'bg-blue-500' },
-    { title: 'Duyuru Yayınla', icon: Megaphone, href: '/admin/announcements/new', color: 'bg-orange-500' },
+    { title: 'Duyuru Yayınla', icon: Megaphone, action: handleCreateAnnouncement, color: 'bg-orange-500' },
     { title: 'Kategori Ekle', icon: FolderOpen, href: '/admin/categories/new', color: 'bg-purple-500' },
     { title: 'Medya Yükle', icon: Images, href: '/admin/gallery/upload', color: 'bg-pink-500' }
   ];
@@ -127,27 +155,42 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Quick Actions */}
+        </div>        {/* Quick Actions */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-foreground mb-4">Hızlı İşlemler</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action, index) => (
-              <Link
-                key={index}
-                to={action.href}
-                className="group bg-card border border-border rounded-xl p-4 hover:shadow-md transition-all duration-200 hover:scale-105"
-              >
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                    <action.icon className="h-6 w-6 text-white" />
+              action.href ? (
+                <Link
+                  key={index}
+                  to={action.href}
+                  className="group bg-card border border-border rounded-xl p-4 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  <div className="flex flex-col items-center text-center space-y-3">
+                    <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                      <action.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors duration-200">
+                      {action.title}
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors duration-200">
-                    {action.title}
-                  </span>
-                </div>
-              </Link>
+                </Link>
+              ) : (
+                <button
+                  key={index}
+                  onClick={action.action}
+                  className="group bg-card border border-border rounded-xl p-4 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  <div className="flex flex-col items-center text-center space-y-3">
+                    <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                      <action.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors duration-200">
+                      {action.title}
+                    </span>
+                  </div>
+                </button>
+              )
             ))}
           </div>
         </div>
@@ -164,10 +207,12 @@ const AdminDashboard: React.FC = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 ${card.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
                     <card.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="text-right">
+                  </div>                  <div className="text-right">
                     <p className="text-xs text-muted-foreground">{card.stats.label}</p>
                     <p className="text-lg font-bold text-foreground">{card.stats.value}</p>
+                    {card.stats.subLabel && (
+                      <p className="text-xs text-muted-foreground mt-1">{card.stats.subLabel}</p>
+                    )}
                   </div>
                 </div>
                 
