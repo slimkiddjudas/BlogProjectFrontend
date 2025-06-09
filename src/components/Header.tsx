@@ -52,14 +52,22 @@ const Header: React.FC = () => {
             >
               Duyurular
               <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
-            </Link>
-            {user?.role === 'admin' && (
+            </Link>            {user?.role === 'admin' && (
               <Link
                 to="/admin"
                 className="text-sm font-medium transition-all duration-300 relative group text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
               >
                 Admin Panel
                 <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-orange-600 to-red-600 transition-all duration-300 w-0 group-hover:w-full" />
+              </Link>
+            )}
+            {(user?.role === 'writer' || user?.role === 'admin') && (
+              <Link
+                to="/writer"
+                className="text-sm font-medium transition-all duration-300 relative group text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+              >
+                Yazar Panel
+                <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-green-600 to-emerald-600 transition-all duration-300 w-0 group-hover:w-full" />
               </Link>
             )}
             <a
