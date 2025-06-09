@@ -94,10 +94,13 @@ const AdminDashboard: React.FC = () => {
       setCategoryStats(prev => ({ ...prev, loading: false }));
     }
   };
-
   const handleCreateAnnouncement = () => {
     navigate('/admin/announcements');
-  };  const dashboardCards = [
+  };
+
+  const handleCreateCategory = () => {
+    navigate('/admin/categories');
+  };const dashboardCards = [
     {
       title: 'Kullanıcı Yönetimi',
       description: 'Tüm kullanıcıları görüntüle ve rollerini yönet',
@@ -157,13 +160,12 @@ const AdminDashboard: React.FC = () => {
       href: '/admin/analytics',
       stats: { label: 'Günlük Ziyaret', value: '1.2K' }
     }
-  ];
-  const quickActions = [
+  ];  const quickActions = [
     { title: 'Yeni Post Ekle', icon: Plus, href: '/admin/posts/new', color: 'bg-blue-500' },
     { title: 'Duyuru Yayınla', icon: Megaphone, action: handleCreateAnnouncement, color: 'bg-orange-500' },
-    { title: 'Kategori Ekle', icon: FolderOpen, href: '/admin/categories/new', color: 'bg-purple-500' },
+    { title: 'Kategori Ekle', icon: FolderOpen, action: handleCreateCategory, color: 'bg-purple-500' },
     { title: 'Medya Yükle', icon: Images, href: '/admin/gallery/upload', color: 'bg-pink-500' }
-  ];  const recentStats = [
+  ];const recentStats = [
     { 
       label: 'Toplam Görüntülenme', 
       value: postStats.loading ? '-' : postStats.totalViews.toLocaleString(), 
