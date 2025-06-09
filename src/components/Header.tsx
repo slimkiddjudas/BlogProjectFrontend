@@ -53,6 +53,15 @@ const Header: React.FC = () => {
               Duyurular
               <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
             </Link>
+            {user?.role === 'admin' && (
+              <Link
+                to="/admin"
+                className="text-sm font-medium transition-all duration-300 relative group text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
+              >
+                Admin Panel
+                <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-orange-600 to-red-600 transition-all duration-300 w-0 group-hover:w-full" />
+              </Link>
+            )}
             <a
               href="#"
               className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
@@ -138,14 +147,22 @@ const Header: React.FC = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Galeri
-                </Link>
-                <Link
+                </Link>                <Link
                   to="/announcements"
                   className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Duyurular
                 </Link>
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-950/30"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <a
                   href="#"
                   className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"

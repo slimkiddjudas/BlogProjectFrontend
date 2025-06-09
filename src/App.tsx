@@ -13,6 +13,14 @@ import AnnouncementsPage from './pages/AnnouncementsPage';
 import AnnouncementDetailPage from './pages/AnnouncementDetailPage';
 import SitemapPage from './pages/SitemapPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
+import AdminAnnouncementsPage from './pages/admin/AdminAnnouncementsPage';
+import AdminPostsPage from './pages/admin/AdminPostsPage';
+import AdminGalleryPage from './pages/admin/AdminGalleryPage';
+import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
 import './App.css';
 
 function App() {
@@ -82,8 +90,7 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />
-                <Route
+                />                <Route
                   path="/sitemap"
                   element={
                     <ProtectedRoute>
@@ -93,6 +100,65 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+
+                {/* Admin Routes - Only accessible by admin users */}
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminRoute>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <AdminRoute>
+                      <AdminUsersPage />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/categories"
+                  element={
+                    <AdminRoute>
+                      <AdminCategoriesPage />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/announcements"
+                  element={
+                    <AdminRoute>
+                      <AdminAnnouncementsPage />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/posts"
+                  element={
+                    <AdminRoute>
+                      <AdminPostsPage />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/gallery"
+                  element={
+                    <AdminRoute>
+                      <AdminGalleryPage />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/analytics"
+                  element={
+                    <AdminRoute>
+                      <AdminAnalyticsPage />
+                    </AdminRoute>
+                  }
+                />
+
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
