@@ -31,10 +31,9 @@ export const PostError: React.FC<PostErrorProps> = ({ error }) => {
           <p className="text-muted-foreground mb-6">
             {error || 'Bir hata oluştu'}
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
             <Button 
-              variant="outline" 
+              variant="default" 
               onClick={() => navigate(-1)}
               className="flex items-center gap-2"
             >
@@ -42,6 +41,7 @@ export const PostError: React.FC<PostErrorProps> = ({ error }) => {
               Geri Git
             </Button>
             <Button 
+              variant="default"
               onClick={() => navigate('/')}
               className="flex items-center gap-2"
             >

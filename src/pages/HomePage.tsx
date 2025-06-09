@@ -5,10 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BlogCard from '@/components/BlogCard';
 import { postService } from '@/services/postService';
 import type { Post } from '@/types';
-import { useTheme } from '../hooks/useTheme';
 
 const HomePage: React.FC = () => {
-  const { theme } = useTheme();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,17 +74,15 @@ const HomePage: React.FC = () => {
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
               Web geliştirme, programlama dilleri, framework'ler ve teknoloji trendleri hakkında 
               derinlemesine makaleler ve pratik rehberler keşfedin.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                variant={theme === 'dark' ? 'ghost' : 'default'}
+            </p>            <div className="flex flex-col sm:flex-row gap-4 justify-center">              <Button 
+                variant="default"
                 size="lg" 
                 className="text-lg px-8 font-semibold"
               >
                 Makaleleri Keşfet
               </Button>
               <Button 
-                variant={theme === 'dark' ? 'ghost' : 'default'}
+                variant="outline"
                 size="lg" 
                 className="text-lg px-8 font-semibold"
               >
@@ -164,9 +160,8 @@ const HomePage: React.FC = () => {
               <p className="text-lg text-muted-foreground">
                 En yeni yazılarımızı takip edin
               </p>
-            </div>
-            <Button
-              variant={theme === 'dark' ? 'ghost' : 'default'}
+            </div>            <Button
+              variant="default"
               className="mt-4 sm:mt-0 border-2 border-primary font-semibold"
             >
               Tümünü Gör
@@ -207,11 +202,10 @@ const HomePage: React.FC = () => {
                     type="email"
                     placeholder="E-posta adresiniz"
                     className="flex-1 px-4 py-3 rounded-lg text-gray-900 bg-white border-2 border-white/20 focus:ring-2 focus:ring-white focus:border-white outline-none transition-all duration-200 placeholder:text-gray-500 font-medium"
-                  />
-                  <Button 
-                    variant={theme === 'dark' ? 'ghost' : 'default'}
+                  />                  <Button 
+                    variant="default"
                     size="lg" 
-                    className="px-8 bg-white hover:bg-gray-100 font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
+                    className="px-8 bg-white text-gray-900 hover:bg-gray-100 font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
                   >
                     Abone Ol
                   </Button>

@@ -6,18 +6,15 @@ import { useTheme } from '../../hooks/useTheme';
 
 export const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme, isTransitioning } = useTheme();
-
   return (
     <Button
-      variant="outline"
+      variant="default"
       size="icon"
       onClick={toggleTheme}
       disabled={isTransitioning}
-      className={`relative overflow-hidden transition-all duration-300 hover:scale-105 border-2 ${
-        theme === 'dark' 
-          ? 'border-white/20 bg-gray-800/50 hover:bg-gray-700/50 text-yellow-400' 
-          : 'border-gray-200 bg-white/50 hover:bg-gray-50/50 text-gray-700'
-      } ${isTransitioning ? 'pointer-events-none opacity-70' : ''}`}
+      className={`relative overflow-hidden transition-all duration-300 hover:scale-105 ${
+        isTransitioning ? 'pointer-events-none opacity-70' : ''
+      }`}
       aria-label={theme === 'light' ? 'Dark mode\'a geç' : 'Light mode\'a geç'}
     >
       <div className="relative w-4 h-4 flex items-center justify-center">

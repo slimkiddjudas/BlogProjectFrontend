@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Mail, Shield, Calendar, Edit, Save, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
@@ -28,9 +28,14 @@ const ProfilePage: React.FC = () => {
   });
   // const [error, setError] = useState<string | null>(null);
 
+  // Sayfa yüklendiğinde en üste scroll yap
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // useEffect(() => {
   //   fetchProfile();
-  // }, []);  const fetchProfile = async () => {
+  // }, []);const fetchProfile = async () => {
   //   try {
   //     setIsLoading(true);
   //     setError(null);
@@ -188,12 +193,11 @@ const ProfilePage: React.FC = () => {
                   <div className="flex items-center justify-center text-sm text-muted-foreground mb-6">
                     <Calendar className="h-4 w-4 mr-2" />
                     Üye olma tarihi: Ocak 2024
-                  </div>
-
-                  <Button
+                  </div>                  <Button
                     onClick={handleEdit}
                     disabled={isEditing}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300"
+                    variant="default"
+                    className="w-full"
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Profili Düzenle
@@ -212,8 +216,7 @@ const ProfilePage: React.FC = () => {
                       <Button onClick={handleSave} size="sm" className="bg-green-600 hover:bg-green-700">
                         <Save className="h-4 w-4 mr-1" />
                         Kaydet
-                      </Button>
-                      <Button onClick={handleCancel} size="sm" variant="outline">
+                      </Button>                      <Button onClick={handleCancel} size="sm" variant="default">
                         <X className="h-4 w-4 mr-1" />
                         İptal
                       </Button>
@@ -320,14 +323,12 @@ const ProfilePage: React.FC = () => {
               <h3 className="text-lg font-semibold text-foreground mb-4">Hesap Güvenliği</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Şifre</span>
-                  <Button variant="outline" size="sm">
+                  <span className="text-sm text-muted-foreground">Şifre</span>                  <Button variant="default" size="sm">
                     Değiştir
                   </Button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">İki faktörlü doğrulama</span>
-                  <Button variant="outline" size="sm">
+                  <span className="text-sm text-muted-foreground">İki faktörlü doğrulama</span>                  <Button variant="default" size="sm">
                     Aktifleştir
                   </Button>
                 </div>

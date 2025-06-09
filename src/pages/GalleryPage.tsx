@@ -60,8 +60,7 @@ const GalleryPage: React.FC = () => {
             <h2 className="text-xl font-semibold text-foreground">Galeri Yüklenemedi</h2>
             <p className="text-muted-foreground text-center max-w-md">
               {error}
-            </p>
-            <Button onClick={() => window.location.reload()} variant="outline">
+            </p>            <Button onClick={() => window.location.reload()} variant="default">
               Tekrar Dene
             </Button>
           </div>
@@ -108,21 +107,20 @@ const GalleryPage: React.FC = () => {
               />
             </div>
 
-            {/* View Mode Toggle */}
-            <div className="flex border border-border rounded-lg overflow-hidden">
+            {/* View Mode Toggle */}            <div className="flex border border-border rounded-lg overflow-hidden">
               <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                variant="default"
                 size="sm"
                 onClick={() => setViewMode('grid')}
-                className="rounded-none"
+                className={`rounded-none ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground'}`}
               >
                 <Grid className="h-4 w-4" />
               </Button>
               <Button
-                variant={viewMode === 'masonry' ? 'default' : 'ghost'}
+                variant="default"
                 size="sm"
                 onClick={() => setViewMode('masonry')}
-                className="rounded-none"
+                className={`rounded-none ${viewMode === 'masonry' ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground'}`}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -144,10 +142,9 @@ const GalleryPage: React.FC = () => {
                   : 'Galeri henüz boş görünüyor. İlk fotoğrafların eklenmesini bekleyin.'
                 }
               </p>
-              {searchTerm && (
-                <Button
+              {searchTerm && (                <Button
                   onClick={() => setSearchTerm('')}
-                  variant="outline"
+                  variant="default"
                   className="mt-4"
                 >
                   Aramayı Temizle

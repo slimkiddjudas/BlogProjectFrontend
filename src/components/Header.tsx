@@ -90,17 +90,15 @@ const Header: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                </Link>
-
-                <Button 
-                  variant="outline"
+                </Link>                <Button 
+                  variant="default"
                   size="sm" 
                   onClick={handleLogout}
                   className="hidden sm:flex items-center space-x-2 transition-all duration-300 hover:scale-105 border-destructive/30 text-destructive hover:bg-destructive/10 hover:border-destructive/50 shadow-sm hover:shadow-md"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>Çıkış</span>
-                </Button>              </div>) : (
+                </Button></div>) : (
               <Link to="/login">
                 <Button 
                   variant="default"
@@ -112,9 +110,8 @@ const Header: React.FC = () => {
               </Link>
             )}
 
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
+            {/* Mobile menu button */}            <Button
+              variant="default"
               size="icon"
               className="lg:hidden transition-all duration-300 hover:scale-110 hover:bg-accent/70 border border-transparent hover:border-border/50 rounded-lg shadow-sm hover:shadow-md"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -182,10 +179,8 @@ const Header: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                  </Link>
-
-                  <Button 
-                    variant="outline"
+                  </Link>                  <Button 
+                    variant="default"
                     size="sm"
                     onClick={handleLogout}
                     className="flex items-center space-x-2 justify-center border-destructive/30 text-destructive hover:bg-destructive/10 hover:border-destructive/50 transition-all duration-300 shadow-sm hover:shadow-md"
@@ -205,9 +200,8 @@ const Header: React.FC = () => {
                       Giriş Yap
                     </Button>
                   </Link>
-                  <Link to="/register" className="w-full">
-                    <Button 
-                      variant="outline"
+                  <Link to="/register" className="w-full">                    <Button 
+                      variant="default"
                       size="sm"
                       className="w-full border-primary/30 text-primary hover:bg-primary/10 transition-all duration-300"
                     >

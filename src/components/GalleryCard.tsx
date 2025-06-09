@@ -86,40 +86,44 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({ item, isOpen, onClos
   if (!isOpen || !item) return null;
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center"
       onClick={onClose}
     >
       <div 
-        className="relative max-w-7xl max-h-full w-full h-full flex items-center justify-center"
+        className="gallery-modal-container relative w-full h-full flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 p-2 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors"
           aria-label="Kapat"
         >
-          <X className="h-6 w-6" />
+          <X className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
         
-        {/* Image */}
-        <div className="relative max-w-full max-h-full">
+        {/* Image container */}
+        <div className="flex-1 flex items-center justify-center w-full min-h-0 mb-2 sm:mb-4">
           <img
             src={getGalleryImageUrl(item.imageUrl)}
             alt={item.title}
-            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            className="gallery-modal-image max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
+            style={{ 
+              maxHeight: 'calc(100vh - 140px)',
+              maxWidth: 'calc(100vw - 16px)'
+            }}
           />
-          
-          {/* Info panel */}
-          <div className="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-4 text-white">
-            <h2 className="text-xl font-bold mb-2">{item.title}</h2>
-            {item.description && (
-              <p className="text-white/80 mb-2">{item.description}</p>
-            )}
-            <div className="flex items-center text-sm text-white/70">
-              <Calendar className="h-4 w-4 mr-2" />
-              <span>{format(new Date(item.createdAt), 'dd MMMM yyyy')}</span>
-            </div>
+        </div>
+        
+        {/* Info panel - responsive positioning */}
+        <div className="gallery-modal-info w-full max-w-4xl bg-black/70 backdrop-blur-sm rounded-lg p-3 sm:p-4 text-white flex-shrink-0">
+          <h2 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2 line-clamp-2">{item.title}</h2>
+          {item.description && (
+            <p className="text-white/80 text-sm sm:text-base mb-1 sm:mb-2 line-clamp-3">{item.description}</p>
+          )}
+          <div className="flex items-center text-xs sm:text-sm text-white/70">
+            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+            <span>{format(new Date(item.createdAt), 'dd MMMM yyyy')}</span>
           </div>
         </div>
       </div>

@@ -342,3 +342,179 @@ select,
     transform: translateY(0);
   }
 }
+
+/* Enhanced button visibility and theme adaptation */
+/* Reset default button styles to use CSS variables */
+button:not([class*="btn-"]):not([data-variant]) {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Ensure Tailwind/Radix button variants use proper theme colors */
+[data-variant="default"] {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: 1px solid hsl(var(--primary)) !important;
+}
+
+[data-variant="default"]:hover {
+  background: hsl(var(--primary) / 0.9) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.25);
+}
+
+[data-variant="outline"] {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: 2px solid hsl(var(--border)) !important;
+}
+
+[data-variant="outline"]:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  border-color: hsl(var(--accent)) !important;
+}
+
+[data-variant="ghost"] {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid transparent !important;
+}
+
+[data-variant="ghost"]:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+[data-variant="secondary"] {
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--secondary-foreground)) !important;
+  border: 1px solid hsl(var(--secondary)) !important;
+}
+
+[data-variant="secondary"]:hover {
+  background: hsl(var(--secondary) / 0.8) !important;
+}
+
+/* Dark theme specific enhancements */
+.dark [data-variant="default"] {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark [data-variant="outline"] {
+  border-color: hsl(var(--border)) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dark [data-variant="outline"]:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Light theme specific enhancements */
+:not(.dark) [data-variant="default"] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:not(.dark) [data-variant="outline"] {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+:not(.dark) [data-variant="outline"]:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure button text is always visible with proper contrast */
+button, .btn {
+  min-height: 36px;
+  font-weight: 500 !important;
+}
+
+/* Additional button styling for better theme adaptation */
+/* Ensure button text contrast in all themes */
+button, .btn {
+  min-height: 36px;
+  font-weight: 500 !important;
+}
+
+/* Custom button classes for specific use cases */
+.btn-theme-aware {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.btn-theme-aware:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  border-color: hsl(var(--accent)) !important;
+}
+
+/* Ensure proper button states in both themes */
+button:disabled, .btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Enhanced button hover effects for both themes */
+button:not(:disabled):hover, .btn:not(:disabled):hover {
+  transform: translateY(-1px) !important;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Gradient buttons maintain their custom styling */
+.bg-gradient-to-r {
+  border: none !important;
+}
+
+/* Theme toggle specific styling */
+[data-theme-toggle] {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+[data-theme-toggle]:hover {
+  background: hsl(var(--accent)) !important;
+}
+
+/* Focus states for accessibility */
+button:focus-visible {
+  outline: 2px solid hsl(var(--ring)) !important;
+  outline-offset: 2px;
+}
+
+/* Active states */
+button:active {
+  transform: translateY(0) !important;
+  transition: all 100ms ease;
+}
+
+/* Hover effects */
+button:hover, .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Gallery Modal Responsive Improvements */
+@media (max-height: 600px) {
+  .gallery-modal-image {
+    max-height: calc(100vh - 100px) !important;
+  }
+}
+
+@media (max-height: 500px) {
+  .gallery-modal-image {
+    max-height: calc(100vh - 80px) !important;
+  }
+}
+
+/* Ensure modal content is scrollable on very small screens */
+@media (max-height: 400px) {
+  .gallery-modal-container {
+    overflow-y: auto;
+  }
+  
+  .gallery-modal-info {
+    position: relative !important;
+    margin-top: 1rem;
+  }
+}
