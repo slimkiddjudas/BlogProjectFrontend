@@ -9,6 +9,9 @@ import RegisterPage from './pages/RegisterPage';
 import PostDetailPage from './pages/PostDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import GalleryPage from './pages/GalleryPage';
+import AnnouncementsPage from './pages/AnnouncementsPage';
+import AnnouncementDetailPage from './pages/AnnouncementDetailPage';
+import SitemapPage from './pages/SitemapPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -51,13 +54,41 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />
-                <Route
+                />                <Route
                   path="/gallery"
                   element={
                     <ProtectedRoute>
                       <Layout>
                         <GalleryPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/announcements"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <AnnouncementsPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />                <Route
+                  path="/announcements/:slug"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <AnnouncementDetailPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/sitemap"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <SitemapPage />
                       </Layout>
                     </ProtectedRoute>
                   }

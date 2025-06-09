@@ -3,6 +3,7 @@ import { TrendingUp, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BlogCard from '@/components/BlogCard';
+import AnnouncementSlider from '@/components/AnnouncementSlider';
 import { postService } from '@/services/postService';
 import type { Post } from '@/types';
 
@@ -95,9 +96,11 @@ const HomePage: React.FC = () => {
         {/* Background Elements */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
-        </div>
+          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />        </div>
       </section>
+
+      {/* Announcements Section */}
+      <AnnouncementSlider />
 
       {/* Stats Section */}
       <section className="py-16 px-4 bg-muted/30">

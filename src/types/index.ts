@@ -128,3 +128,18 @@ export interface GalleryItem {
 export interface GalleryResponse {
   items: GalleryItem[];
 }
+
+// Announcement types
+export interface Announcement {
+  id: number;
+  title: string;
+  content: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AnnouncementsResponse {
+  totalAnnouncements: number;
+  announcements: Announcement[];
+}

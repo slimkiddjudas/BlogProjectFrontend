@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Github, Linkedin, Heart } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
@@ -17,10 +18,9 @@ const Footer: React.FC = () => {
       { name: 'İletişim', href: '#' },
       { name: 'Gizlilik Politikası', href: '#' },
       { name: 'Kullanım Şartları', href: '#' }
-    ],
-    resources: [
+    ],    resources: [
       { name: 'RSS Feed', href: '#' },
-      { name: 'Site Haritası', href: '#' },
+      { name: 'Site Haritası', href: '/sitemap' },
       { name: 'Yazar Ol', href: '#' },
       { name: 'SSS', href: '#' }
     ]
@@ -102,16 +102,24 @@ const Footer: React.FC = () => {
 
           {/* Resources Links */}
           <div>
-            <h4 className="font-semibold mb-4">Kaynaklar</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold mb-4">Kaynaklar</h4>            <ul className="space-y-2">
               {footerLinks.resources.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.name}
-                  </a>
+                  {link.href.startsWith('/') ? (
+                    <Link
+                      to={link.href}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

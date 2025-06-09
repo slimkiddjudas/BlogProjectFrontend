@@ -40,21 +40,19 @@ const Header: React.FC = () => {
             >
               Ana Sayfa
               <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
-            </Link>
-            <Link
+            </Link>            <Link
               to="/gallery"
               className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
             >
               Galeri
               <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
-            </Link>
-            <a
-              href="#"
+            </Link>            <Link
+              to="/announcements"
               className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
             >
-              Kategoriler
+              Duyurular
               <span className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 w-0 group-hover:w-full" />
-            </a>
+            </Link>
             <a
               href="#"
               className="text-sm font-medium transition-all duration-300 relative group text-muted-foreground hover:text-foreground"
@@ -134,20 +132,20 @@ const Header: React.FC = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Ana Sayfa
-                </Link>
-                <Link
+                </Link>                <Link
                   to="/gallery"
                   className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Galeri
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  to="/announcements"
                   className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Kategoriler
-                </a>
+                  Duyurular
+                </Link>
                 <a
                   href="#"
                   className="text-sm font-medium transition-all duration-300 px-3 py-2 rounded-lg relative text-muted-foreground hover:text-foreground hover:bg-accent/30"
