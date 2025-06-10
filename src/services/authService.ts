@@ -3,6 +3,10 @@ import type { LoginCredentials, RegisterCredentials, AuthResponse, User } from '
 
 export class AuthService {  static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
+      // Clear any cached CSRF token before login to ensure fresh token
+      const { CsrfService } = await import('./csrfService');
+      CsrfService.clearCachedToken();
+      
       const response = await api.post('/auth/login', credentials);
       return response.data;
     } catch {
@@ -18,10 +22,13 @@ export class AuthService {  static async login(credentials: LoginCredentials): P
       throw new Error('Kayıt olunamadı');
     }
   }
-
   static async logout(): Promise<void> {
     try {
       await api.post('/auth/logout');
+      
+      // Clear CSRF token cache after logout
+      const { CsrfService } = await import('./csrfService');
+      CsrfService.clearCachedToken();
     } catch {
       throw new Error('Çıkış yapılamadı');
     }

@@ -5,8 +5,7 @@ import {
   FileText, 
   FolderOpen, 
   Megaphone, 
-  Images, 
-  Settings,
+  Images,
   Plus,
   TrendingUp,
   Eye,
@@ -233,10 +232,6 @@ const AdminDashboard: React.FC = () => {
                 <ArrowLeft className="h-4 w-4" />
                 <span className="text-sm">Ana Siteye Dön</span>
               </Link>
-              <div className="flex items-center space-x-2">
-                <Settings className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Admin Yetkileri</span>
-              </div>
             </div>
           </div>
         </div>

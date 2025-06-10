@@ -12,7 +12,9 @@ interface CategoryData extends AdminCategory {
 const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: '', description: '' });
+  const [editingCategory, setEditingCategory] = useState<CategoryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -63,8 +65,7 @@ const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories]
       month: 'long',
       day: 'numeric'
     });
-  };
-  const handleAddCategory = async () => {
+  };  const handleAddCategory = async () => {
     if (newCategory.name.trim()) {
       try {
         const createdCategory = await AdminCategoryService.createCategory({
@@ -78,6 +79,34 @@ const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories]
       } catch (err) {
         setError('Kategori eklenirken bir hata oluştu.');
         console.error('Error creating category:', err);
+      }
+    }
+  };
+
+  const handleEditCategory = (category: CategoryData) => {
+    setEditingCategory(category);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateCategory = async () => {
+    if (editingCategory && editingCategory.name.trim()) {
+      try {
+        const updatedCategory = await AdminCategoryService.updateCategory(editingCategory.id, {
+          name: editingCategory.name,
+          description: editingCategory.description || undefined
+        });
+        
+        setCategories(categories.map(cat => 
+          cat.id === editingCategory.id 
+            ? { ...updatedCategory, postCount: editingCategory.postCount }
+            : cat
+        ));
+        
+        setEditingCategory(null);
+        setIsEditModalOpen(false);
+      } catch (err) {
+        setError('Kategori güncellenirken bir hata oluştu.');
+        console.error('Error updating category:', err);
       }
     }
   };
@@ -184,9 +213,11 @@ const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories]
               <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
                   <FolderOpen className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex space-x-2">
-                  <button className="p-2 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors duration-200">
+                </div>                <div className="flex space-x-2">
+                  <button 
+                    onClick={() => handleEditCategory(category)}
+                    className="p-2 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors duration-200"
+                  >
                     <Edit className="h-4 w-4" />
                   </button>
                   <button 
@@ -228,9 +259,7 @@ const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories]
               </div>
             )}
           </>
-        )}
-
-        {/* Add Category Modal */}
+        )}        {/* Add Category Modal */}
         {isAddModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-card border border-border rounded-xl p-6 w-full max-w-md">
@@ -277,6 +306,62 @@ const AdminCategoriesPage: React.FC = () => {  const [categories, setCategories]
                   className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                 >
                   Ekle
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Category Modal */}
+        {isEditModalOpen && editingCategory && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-card border border-border rounded-xl p-6 w-full max-w-md">
+              <h2 className="text-lg font-semibold text-foreground mb-4">Kategori Düzenle</h2>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Kategori Adı *
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Kategori adını girin..."
+                    value={editingCategory.name}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Açıklama
+                  </label>
+                  <textarea
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Kategori açıklamasını girin..."
+                    rows={3}
+                    value={editingCategory.description || ''}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setEditingCategory(null);
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-accent transition-colors duration-200"
+                >
+                  İptal
+                </button>
+                <button
+                  onClick={handleUpdateCategory}
+                  disabled={!editingCategory.name.trim()}
+                  className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Güncelle
                 </button>
               </div>
             </div>

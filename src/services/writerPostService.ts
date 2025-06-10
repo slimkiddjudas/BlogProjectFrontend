@@ -63,9 +63,7 @@ export class WriterPostService {
       
       if (postData.image) {
         formData.append('image', postData.image);
-      }
-
-      const response = await api.post('/posts', formData, {
+      }      const response = await api.post('/posts', formData, {
         headers: {
           'X-CSRF-Token': csrfToken,
           'Content-Type': 'multipart/form-data'
@@ -81,8 +79,7 @@ export class WriterPostService {
 
   static async updatePost(id: number, postData: UpdatePostRequest): Promise<WriterPost> {
     try {
-      const csrfToken = await CsrfService.getCsrfToken();
-      const response = await api.put(`/posts/${id}`, postData, {
+      const csrfToken = await CsrfService.getCsrfToken();      const response = await api.put(`/posts/${id}`, postData, {
         headers: {
           'X-CSRF-Token': csrfToken
         }
@@ -97,8 +94,7 @@ export class WriterPostService {
 
   static async deletePost(id: number): Promise<void> {
     try {
-      const csrfToken = await CsrfService.getCsrfToken();
-      await api.delete(`/posts/${id}`, {
+      const csrfToken = await CsrfService.getCsrfToken();      await api.delete(`/posts/${id}`, {
         headers: {
           'X-CSRF-Token': csrfToken
         }

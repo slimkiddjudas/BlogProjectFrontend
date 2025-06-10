@@ -27,13 +27,25 @@ export class CsrfService {
       throw new Error('CSRF token alınamadı');
     }
   }
-
   /**
    * Clear cached token - useful when token becomes invalid
    */
   static clearCachedToken(): void {
     this.cachedToken = null;
     this.tokenExpiry = null;
+  }
+
+  /**
+   * Get CSRF token with retry logic - clears cache and retries once if token is invalid
+   */
+  static async getCsrfTokenWithRetry(): Promise<string> {
+    try {
+      return await this.getCsrfToken();
+    } catch {
+      // If failed, clear cache and try once more
+      this.clearCachedToken();
+      return await this.getCsrfToken();
+    }
   }
 
   /**

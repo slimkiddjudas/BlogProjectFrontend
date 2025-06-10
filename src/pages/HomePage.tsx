@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Users, BookOpen } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { TrendingUp, Users, UserCheck, Mail, MapPin, Phone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BlogCard from '@/components/BlogCard';
 import AnnouncementSlider from '@/components/AnnouncementSlider';
 import { postService } from '@/services/postService';
+import { useSocket } from '@/hooks/useSocket';
 import type { Post } from '@/types';
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { activeUsersCount } = useSocket();
   
   useEffect(() => {
     const fetchPosts = async () => {
@@ -39,15 +40,7 @@ const HomePage: React.FC = () => {
   const recentPosts = posts
     .filter(post => !featuredPosts.includes(post))
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 8);
-  
-  const stats = [
-    {
-      title: 'Toplam Makale',
-      value: `${posts.length}+`,
-      icon: BookOpen,
-      description: 'Teknoloji ve geliştirme konularında'
-    },
+    .slice(0, 8);    const stats = [
     {
       title: 'Toplam Görüntülenme',
       value: `${posts.reduce((sum, post) => sum + post.viewCount, 0)}+`,
@@ -59,6 +52,12 @@ const HomePage: React.FC = () => {
       value: `${new Set(posts.map(post => post.userId)).size}+`,
       icon: Users,
       description: 'Platform yazarları'
+    },
+    {
+      title: 'Anlık Ziyaretçiler',
+      value: `${activeUsersCount}`,
+      icon: UserCheck,
+      description: 'Şu anda online olan kullanıcılar'
     }
   ];
 
@@ -71,25 +70,10 @@ const HomePage: React.FC = () => {
             <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
               Teknoloji ve Geliştirme Dünyasında
               <span className="block">Yeni Perspektifler</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+            </h1>            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
               Web geliştirme, programlama dilleri, framework'ler ve teknoloji trendleri hakkında 
               derinlemesine makaleler ve pratik rehberler keşfedin.
-            </p>            <div className="flex flex-col sm:flex-row gap-4 justify-center">              <Button 
-                variant="default"
-                size="lg" 
-                className="text-lg px-8 font-semibold"
-              >
-                Makaleleri Keşfet
-              </Button>
-              <Button 
-                variant="outline"
-                size="lg" 
-                className="text-lg px-8 font-semibold"
-              >
-                RSS Feed
-              </Button>
-            </div>
+            </p>
           </div>
         </div>
         
@@ -152,10 +136,8 @@ const HomePage: React.FC = () => {
             </div>
           )}
         </div>
-      </section>
-
-      {/* Recent Posts */}
-      <section className="py-16 px-4 bg-muted/30">
+      </section>      {/* Recent Posts */}
+      <section id="recent-posts" className="py-16 px-4 bg-muted/30">
         <div className="container mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12">
             <div>
@@ -163,12 +145,7 @@ const HomePage: React.FC = () => {
               <p className="text-lg text-muted-foreground">
                 En yeni yazılarımızı takip edin
               </p>
-            </div>            <Button
-              variant="default"
-              className="mt-4 sm:mt-0 border-2 border-primary font-semibold"
-            >
-              Tümünü Gör
-            </Button>
+            </div>
           </div>
           
           {!loading && !error && recentPosts.length > 0 && (
@@ -176,49 +153,67 @@ const HomePage: React.FC = () => {
               {recentPosts.map((post) => (
                 <BlogCard key={post.id} post={post} />
               ))}
-            </div>
-          )}
+            </div>          )}
         </div>
-      </section>
+      </section>      {/* Contact Section */}
+      <section id="contact" className="py-16 px-4 bg-gradient-to-br from-background via-accent/10 to-background">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent">
+              İletişim
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Sorularınız, önerileriniz veya işbirliği teklifleriniz için bizimle iletişime geçebilirsiniz.
+            </p>
+          </div>
 
-      {/* Newsletter Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <Card className="bg-gradient-to-r from-blue-600 to-purple-600 border-0 text-white overflow-hidden relative">
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full -translate-y-48 translate-x-48"></div>
-              <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full translate-y-48 -translate-x-48"></div>
-            </div>
-            
-            <CardContent className="p-8 md:p-12 relative z-10">
-              <div className="text-center max-w-2xl mx-auto">
-                <h2 className="text-3xl font-bold mb-4 text-white">
-                  Güncel Kalın
-                </h2>
-                <p className="text-lg mb-8 text-blue-100">
-                  Yeni makaleler, teknoloji trendleri ve özel içerikler için 
-                  haftalık bültenimize abone olun.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                  <input
-                    type="email"
-                    placeholder="E-posta adresiniz"
-                    className="flex-1 px-4 py-3 rounded-lg text-gray-900 bg-white border-2 border-white/20 focus:ring-2 focus:ring-white focus:border-white outline-none transition-all duration-200 placeholder:text-gray-500 font-medium"
-                  />                  <Button 
-                    variant="default"
-                    size="lg" 
-                    className="px-8 bg-white text-gray-900 hover:bg-gray-100 font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
-                  >
-                    Abone Ol
-                  </Button>
-                </div>
-                <p className="text-sm text-blue-100 mt-4 opacity-90">
-                  Spam göndermiyoruz. İstediğiniz zaman abonelikten çıkabilirsiniz.
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Email */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform duration-300 hover:scale-110 shadow-lg">
+                <Mail className="w-8 h-8 text-white" />
               </div>
-            </CardContent>
-          </Card>
+              <h3 className="text-lg font-semibold text-foreground mb-2">E-posta</h3>
+              <p className="text-muted-foreground">info@cerkblog.com</p>
+            </div>
+
+            {/* Phone */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform duration-300 hover:scale-110 shadow-lg">
+                <Phone className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Telefon</h3>
+              <p className="text-muted-foreground">+90 (555) 123 45 67</p>
+            </div>
+
+            {/* Location */}
+            <div className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform duration-300 hover:scale-110 shadow-lg">
+                <MapPin className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Adres</h3>
+              <p className="text-muted-foreground">Teknoloji Merkezi<br />İstanbul, Türkiye</p>
+            </div>
+          </div>
+
+          {/* Social Media */}
+          <div className="text-center mt-12">
+            <h3 className="text-xl font-semibold text-foreground mb-6">Takip Edin</h3>
+            <div className="flex justify-center space-x-4">
+              <a href="#" className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 shadow-lg">
+                <span className="text-lg font-bold">f</span>
+              </a>
+              <a href="#" className="w-12 h-12 bg-blue-400 hover:bg-blue-500 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 shadow-lg">
+                <span className="text-lg font-bold">t</span>
+              </a>
+              <a href="#" className="w-12 h-12 bg-pink-600 hover:bg-pink-700 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 shadow-lg">
+                <span className="text-sm font-bold">ig</span>
+              </a>
+              <a href="#" className="w-12 h-12 bg-blue-700 hover:bg-blue-800 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 shadow-lg">
+                <span className="text-sm font-bold">in</span>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </div>

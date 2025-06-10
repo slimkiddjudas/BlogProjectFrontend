@@ -234,7 +234,7 @@ const WriterPostForm: React.FC = () => {
             {!isEdit && (
               <div className="mb-6">
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Resim (Opsiyonel)
+                  Resim
                 </label>
                 <div className="space-y-3">
                   <div className="flex items-center justify-center w-full">

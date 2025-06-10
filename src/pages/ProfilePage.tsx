@@ -4,7 +4,6 @@ import { Button } from '../components/ui/button';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import { Card } from '../components/ui/card';
 import { useAuth } from '../contexts/auth-context';
-import { useSocket } from '@/hooks/useSocket';
 import { AuthService } from '../services/authService';
 
 interface UserProfile {
@@ -17,7 +16,6 @@ interface UserProfile {
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
-  const { activeUsersCount } = useSocket();
   const [profile, setProfile] = useState<UserProfile | null>(user);
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -233,13 +231,9 @@ const ProfilePage: React.FC = () => {
           <div className="mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent">
               Profil Ayarları
-            </h1>
-            <p className="text-muted-foreground mt-2">
+            </h1>            <p className="text-muted-foreground mt-2">
               Hesap bilgilerinizi görüntüleyin ve düzenleyin
             </p>
-            <div className="text-sm text-muted-foreground mt-1">
-              Aktif Kullanıcı Sayısı: <span className="font-semibold">{activeUsersCount}</span>
-            </div>
 
           </div>
 
