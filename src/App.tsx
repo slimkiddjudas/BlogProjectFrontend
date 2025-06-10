@@ -1,30 +1,35 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from './components/providers/ThemeProvider';
-import { AuthProvider } from './contexts/auth-context';
-import { SocketProvider } from './contexts/socket-context';
-import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import PostDetailPage from './pages/PostDetailPage';
-import ProfilePage from './pages/ProfilePage';
-import GalleryPage from './pages/GalleryPage';
-import AnnouncementsPage from './pages/AnnouncementsPage';
-import AnnouncementDetailPage from './pages/AnnouncementDetailPage';
-import SitemapPage from './pages/SitemapPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
-import WriterRoute from './components/WriterRoute';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
-import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
-import AdminAnnouncementsPage from './pages/admin/AdminAnnouncementsPage';
-import AdminPostsPage from './pages/admin/AdminPostsPage';
-import AdminGalleryPage from './pages/admin/AdminGalleryPage';
-import WriterDashboard from './pages/writer/WriterDashboard';
-import WriterPostsPage from './pages/writer/WriterPostsPage';
-import WriterPostForm from './pages/writer/WriterPostForm';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { ThemeProvider } from "./components/providers/ThemeProvider";
+import { AuthProvider } from "./contexts/auth-context";
+import { SocketProvider } from "./contexts/socket-context";
+import Layout from "./components/Layout";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import PostDetailPage from "./pages/PostDetailPage";
+import ProfilePage from "./pages/ProfilePage";
+import GalleryPage from "./pages/GalleryPage";
+import AnnouncementsPage from "./pages/AnnouncementsPage";
+import AnnouncementDetailPage from "./pages/AnnouncementDetailPage";
+import SitemapPage from "./pages/SitemapPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
+import WriterRoute from "./components/WriterRoute";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
+import AdminCategoriesPage from "./pages/admin/AdminCategoriesPage";
+import AdminAnnouncementsPage from "./pages/admin/AdminAnnouncementsPage";
+import AdminPostsPage from "./pages/admin/AdminPostsPage";
+import AdminGalleryPage from "./pages/admin/AdminGalleryPage";
+import WriterDashboard from "./pages/writer/WriterDashboard";
+import WriterPostsPage from "./pages/writer/WriterPostsPage";
+import WriterPostForm from "./pages/writer/WriterPostForm";
+import "./App.css";
 
 function App() {
   return (
@@ -37,7 +42,7 @@ function App() {
                 {/* Auth pages without header/footer */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                  {/* Protected pages with header/footer */}
+                {/* Protected pages with header/footer */}
                 <Route
                   path="/"
                   element={
@@ -47,7 +52,8 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />              <Route
+                />{" "}
+                <Route
                   path="/post/:slug"
                   element={
                     <ProtectedRoute>
@@ -56,7 +62,8 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />                <Route
+                />{" "}
+                <Route
                   path="/profile"
                   element={
                     <ProtectedRoute>
@@ -65,7 +72,8 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />                <Route
+                />{" "}
+                <Route
                   path="/gallery"
                   element={
                     <ProtectedRoute>
@@ -84,7 +92,8 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />                <Route
+                />{" "}
+                <Route
                   path="/announcements/:slug"
                   element={
                     <ProtectedRoute>
@@ -93,7 +102,8 @@ function App() {
                       </Layout>
                     </ProtectedRoute>
                   }
-                />                <Route
+                />{" "}
+                <Route
                   path="/sitemap"
                   element={
                     <ProtectedRoute>
@@ -103,7 +113,6 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-
                 {/* Admin Routes - Only accessible by admin users */}
                 <Route
                   path="/admin"
@@ -144,7 +153,8 @@ function App() {
                       <AdminPostsPage />
                     </AdminRoute>
                   }
-                />                <Route
+                />{" "}
+                <Route
                   path="/admin/gallery"
                   element={
                     <AdminRoute>
@@ -152,7 +162,6 @@ function App() {
                     </AdminRoute>
                   }
                 />
-
                 {/* Writer Routes */}
                 <Route
                   path="/writer"
@@ -186,7 +195,6 @@ function App() {
                     </WriterRoute>
                   }
                 />
-
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>

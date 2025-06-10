@@ -98,11 +98,10 @@ const Footer: React.FC = () => {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Resources Links */}
+          </div>          {/* Resources Links */}
           <div>
-            <h4 className="font-semibold mb-4">Kaynaklar</h4>            <ul className="space-y-2">
+            <h4 className="font-semibold mb-4">Kaynaklar</h4>
+            <ul className="space-y-2">
               {footerLinks.resources.map((link, index) => (
                 <li key={index}>
                   {link.href.startsWith('/') ? (
