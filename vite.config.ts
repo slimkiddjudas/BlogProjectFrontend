@@ -11,4 +11,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  define: {
+    // Add environment variables
+    global: 'globalThis',
+  },
 })
